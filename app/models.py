@@ -23,7 +23,7 @@ class Paste(Base):
 
     burn_after_read: Mapped[bool] = mapped_column(nullable=False, default=False)
     password_hash: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    delete_token: Mapped[str] = mapped_column(String(32), nullable=False)
+    delete_token: Mapped[str] = mapped_column(String(64), nullable=False)
     views: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
     __table_args__ = (Index("ix_pastes_expires_at", "expires_at"),)
