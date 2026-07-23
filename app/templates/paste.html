@@ -9,6 +9,9 @@
     {{ paste.language }} ·
     {{ paste.created_at.strftime('%Y-%m-%d %H:%M') }} UTC
     {% if paste.expires_at %} · expires {{ paste.expires_at.strftime('%Y-%m-%d %H:%M') }} UTC{% endif %}
+    {% if burned %}
+  <p style="color:#e88;">This paste was set to burn after reading. It has now been deleted.</p>
+{% endif %}
   </span>
 {% endblock %}
 

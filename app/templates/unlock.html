@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}protected · pastebin{% endblock %}
+
+{% block header %}<a href="/">new paste</a>{% endblock %}
+
+{% block content %}
+  <p>This paste is password protected.</p>
+  <form method="post" action="/{{ paste_id }}">
+    <input type="password" name="password" autofocus
+           style="padding:0.5rem; background:#2a2a2a; border:1px solid #444; color:#ddd;">
+    <button type="submit" style="padding:0.5rem 1rem;">unlock</button>
+  </form>
+{% endblock %}

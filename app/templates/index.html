@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block header %}<strong>pastebin</strong>{% endblock %}
+
+{% block content %}
+<textarea id="content" rows="20" style="width:100%; background:#2a2a2a; color:#ddd; border:1px solid #444; padding:0.5rem; font-family:inherit;"></textarea>
+
+<div style="margin-top:0.75rem; display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
+  <select id="language" style="padding:0.4rem; background:#2a2a2a; color:#ddd; border:1px solid #444;">
+    <option value="text">plain text</option>
+    <option value="python">python</option>
+    <option value="javascript">javascript</option>
+    <option value="cpp">c++</option>
+    <option value="go">go</option>
+    <option value="sql">sql</option>
+    <option value="bash">bash</option>
+    <option value="json">json</option>
+  </select>
+
+  <select id="expiry" style="padding:0.4rem; background:#2a2a2a; color:#ddd; border:1px solid #444;">
+    <option value="">never</option>
+    <option value="10">10 minutes</option>
+    <option value="60">1 hour</option>
+    <option value="1440">1 day</option>
+    <option value="10080">1 week</option>
+  </select>
+
+  <label><input type="checkbox" id="burn"> burn after read</label>
+  <input type="password" id="password" placeholder="password (optional)"
+         style="padding:0.4rem; background:#2a2a2a; color:#ddd; border:1px solid #444;">
+
+  <button id="save" style="padding:0.4rem 1.2rem;">save</button>
+</div>
+
+<p id="result" style="margin-top:1rem;"></p>
+
+<script>
+document.getElementById('save').addEventListener('click', async () => {
+  const expiry = document.getElementById('expiry').value;
+  const password = document.getElementById('password').value;
+
+  const body = {
+    content: document.getElementById('content').value,
+    language: document.getElementById('language').value,
+    burn_after_read: document.getElementById('burn').checked,
+  };
+  if (expiry) body.expires_in_minutes = parseInt(expiry);
+  if (password) body.password = password;
+
+  const res = await fetch('/api/pastes', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(body),
+  });
+
+  const out = document.getElementById('result');
+  if (!res.ok) { out.textContent = 'error: ' + res.status; return; }
+
+  const data = await res.json();
+  out.innerHTML = `<a href="${data.url}">${data.url}</a><br>
+    <span class="meta">delete token: ${data.delete_token}</span>`;
+});
+</script>
+{% endblock %}

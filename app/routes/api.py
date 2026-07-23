@@ -48,3 +48,14 @@ async def read_raw(
         content=paste.content,
         headers={"Cache-Control": "public, max-age=31536000, immutable"},
     )
+
+
+@router.delete("/{paste_id}", status_code=204)
+async def delete_paste(
+    paste_id: str,
+    token: str,
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    deleted = await paste_service.delete_paste(db, paste_id, token)
+    if not deleted:
+        raise HTTPException(status_code = 404, detail = "not found")
