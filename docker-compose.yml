@@ -2,9 +2,9 @@ services:
   db:
     image: postgres:17
     environment:
-      POSTGRES_USER: pastebin
-      POSTGRES_PASSWORD: pastebin
-      POSTGRES_DB: pastebin
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -18,7 +18,7 @@ services:
     image: pastebin:latest
     command: ["uv", "run", "alembic", "upgrade", "head"]
     environment:
-      DATABASE_URL: postgresql+asyncpg://pastebin:pastebin@db:5432/pastebin
+      DATABASE_URL: ${DATABASE_URL}
     depends_on:
       db:
         condition: service_healthy
@@ -28,7 +28,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgresql+asyncpg://pastebin:pastebin@db:5432/pastebin
+      DATABASE_URL: ${DATABASE_URL}
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -37,7 +37,7 @@ services:
     image: pastebin:latest
     command: ["uv", "run", "python", "-m", "worker.cleanup"]
     environment:
-      DATABASE_URL: postgresql+asyncpg://pastebin:pastebin@db:5432/pastebin
+      DATABASE_URL: ${DATABASE_URL}
     depends_on:
       migrate:
         condition: service_completed_successfully
