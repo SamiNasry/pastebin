@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}{{ paste.id }} · pastebin{% endblock %}
+
+{% block header %}
+  <a href="/">new paste</a>
+  <a href="/api/pastes/{{ paste.id }}/raw">raw</a>
+  <span class="meta">
+    {{ paste.language }} ·
+    {{ paste.created_at.strftime('%Y-%m-%d %H:%M') }} UTC
+    {% if paste.expires_at %} · expires {{ paste.expires_at.strftime('%Y-%m-%d %H:%M') }} UTC{% endif %}
+  </span>
+{% endblock %}
+
+{% block content %}
+  {{ paste.rendered_html | safe }}
+{% endblock %}

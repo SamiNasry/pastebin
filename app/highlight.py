@@ -20,3 +20,6 @@ def render(content: str, language: str) -> tuple[str,str]:
         except ClassNotFound:
             lexer = get_lexer_by_name("text")
     return pygments_highlight(content, lexer, FORMATTER), lexer.aliases[0]
+
+def stylesheet() -> str:
+    return HtmlFormatter(style="monokai").get_style_defs(".highlight")
