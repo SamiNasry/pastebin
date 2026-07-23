@@ -1,5 +1,7 @@
 from datetime import UTC, datetime, timedelta
 
+from app.highlight import render
+
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -17,12 +19,14 @@ async def create_paste(db: AsyncSession, data : PasteCreate) -> Paste:
         expires_at = datetime.now(UTC) + timedelta(minutes=data.expires_in_minutes)
 
     delete_token = generate_delete_token()
+    rendered_html, resolved_language = render(data.content, data.language)
     for _ in range(MAX_ID_ATTEMPTS):
         paste = Paste(
             id=generate_id(),
             content=data.content,
-            language=data.language,
+            language=resolved_language,
             expires_at=expires_at,
+            rendered_html=rendered_html,
             burn_after_read=data.burn_after_read,
             delete_token=delete_token,
         )
